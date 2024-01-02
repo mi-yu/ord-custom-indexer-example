@@ -1,6 +1,6 @@
 use clap::Parser;
 use ord::{
-    index::{Index, LocationUpdateEvent},
+    index::{event::Event, Index},
     options::Options,
 };
 use std::{
@@ -16,8 +16,8 @@ async fn main() {
 
     let index_options = Options::parse();
     let mut index = Index::open(&index_options).unwrap();
-    let (sender, mut receiver) = tokio::sync::mpsc::channel::<LocationUpdateEvent>(128);
-    index.with_event_sender(sender);
+    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Event>(128);
+    index.set_event_sender(sender);
 
     // Handle Ctrl-C
     ctrlc::set_handler(move || {
@@ -30,10 +30,10 @@ async fn main() {
         while !SHUTDOWN_SIGNAL.load(Ordering::SeqCst) {
             if let Some(event) = receiver.recv().await {
                 match event {
-                    LocationUpdateEvent::InscriptionCreated { .. } => {
+                    Event::InscriptionCreated { .. } => {
                         println!("Inscription created: {:?}", event);
                     }
-                    LocationUpdateEvent::InscriptionMoved { .. } => {
+                    Event::InscriptionMoved { .. } => {
                         println!("Inscription moved: {:?}", event);
                     }
                 }
