@@ -6,7 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ord = { git = "https://github.com/magicoss/ord-kafka.git", rev = "c058aff" }
+ord = { git = "https://github.com/mi-yu/ord", rev = "b0b11c91a16b222b986ad4793f2b4bbcc6d6765a" }
 tokio = { version = "1.17.0", features = ["rt-multi-thread"] }
 ctrlc = { version = "3.2.1", features = ["termination"] }
 clap = { version = "4.4.2", features = ["derive"] }
+anyhow = { version = "1.0.56", features = ["backtrace"] }

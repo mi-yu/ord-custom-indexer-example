@@ -15,9 +15,8 @@ async fn main() {
     println!("Starting custom ord indexer...");
 
     let index_options = Options::parse();
-    let mut index = Index::open(&index_options).unwrap();
     let (sender, mut receiver) = tokio::sync::mpsc::channel::<Event>(128);
-    index.set_event_sender(sender);
+    let index = Index::open_with_event_sender(&index_options, Some(sender)).unwrap();
 
     // Handle Ctrl-C
     ctrlc::set_handler(move || {
@@ -33,7 +32,7 @@ async fn main() {
                     Event::InscriptionCreated { .. } => {
                         println!("Inscription created: {:?}", event);
                     }
-                    Event::InscriptionMoved { .. } => {
+                    Event::InscriptionTransferred { .. } => {
                         println!("Inscription moved: {:?}", event);
                     }
                 }
